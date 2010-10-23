@@ -5,13 +5,12 @@ class UsersController extends AppController {
 	var $scaffold;
 
     function beforeFilter() {
-        parent::beforeFilter();
-        //$this->Auth->allow(array('*'));        
+        parent::beforeFilter();        
         $this->Auth->loginRedirect = array('controller' => 'dashboard', 'action' => 'index');
     }
 
 	function login() {
-		//Auth Magic 
+		// Auth Magic 
 	}
 	
 	function logout() {
