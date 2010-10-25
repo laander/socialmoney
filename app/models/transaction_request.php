@@ -74,5 +74,55 @@ class TransactionRequest extends AppModel {
 		)
 	);
 
+	function afterSave($created) {
+		
+		// When a transaction request has been accepted, transaction entries should be created.
+		// Two mirrored entries are created in the transaction model, with reference to the original request.
+		if(!$created && $this->data['TransactionRequest']['status_id'] == 2) {
+			
+			// Create the first transaction entry
+			$this->Transaction->create();
+			$transaction1Data = array(
+				'Transaction' => array(
+					'user_id' => $this->data['TransactionRequest']['user_id'],
+					'friend_user_id' => $this->data['TransactionRequest']['friend_user_id'],
+					'amount' => $this->data['TransactionRequest']['amount'],
+					'transaction_request_id' => $this->data['TransactionRequest']['id'],
+					'mirror_id' => 0,
+				)
+			);
+			
+			if($this->Transaction->save($transaction1Data)) {
+		        
+		        // Get the new entrys id and create the second transaction entry with roughly same data as the first
+		        $transaction1Id = $this->Transaction->id;
+				$this->Transaction->create();
+				
+				$transaction2Data = $transaction1Data;
+				$transaction2Data['Transaction']['user_id'] = $this->data['TransactionRequest']['friend_user_id'];
+				$transaction2Data['Transaction']['friend_user_id'] = $this->data['TransactionRequest']['user_id'];
+				$transaction2Data['Transaction']['amount'] = $this->data['TransactionRequest']['amount'] * -1;				
+				$transaction2Data['Transaction']['mirror_id'] = $transaction1Id;
+				
+				if($this->Transaction->save($transaction2Data)) {
+					
+					// Set the first entrys mirror_id to the second entrys
+					$transaction2Id = $this->Transaction->id;					
+					$this->Transaction->id = $transaction1Id;
+					
+					if ($this->Transaction->saveField('mirror_id', $transaction2Id)) {
+						// All saved!						
+					}		
+				}
+			}
+		}
+	}
+
+	function findMineSent($findType = 'all', $userId) {
+		return $this->find($findType, array('conditions' => array('TransactionRequest.user_id' => $userId)));
+	}
+	function findMineReceived($findType = 'all', $userId) {
+		return $this->find($findType, array('conditions' => array('TransactionRequest.friend_user_id' => $userId)));
+	}
 }
 ?>

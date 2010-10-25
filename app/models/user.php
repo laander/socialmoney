@@ -1,7 +1,7 @@
 <?php
 class User extends AppModel {
 	var $name = 'User';
-	var $displayField = 'alias';	
+	var $displayField = 'alias';
 	var $validate = array(
 		'username' => array(
 			'notempty' => array(
@@ -95,9 +95,22 @@ class User extends AppModel {
 			'finderQuery' => '',
 			'counterQuery' => ''
 		),
-		'FriendRequest' => array(
+		'SentFriendRequest' => array(
 			'className' => 'FriendRequest',
 			'foreignKey' => 'user_id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+		),
+		'ReceivedFriendRequest' => array(
+			'className' => 'FriendRequest',
+			'foreignKey' => 'friend_user_id',
 			'dependent' => false,
 			'conditions' => '',
 			'fields' => '',
@@ -121,7 +134,7 @@ class User extends AppModel {
 			'finderQuery' => '',
 			'counterQuery' => ''
 		),		
-		'TransactionRequest' => array(
+		'SentTransactionRequest' => array(
 			'className' => 'TransactionRequest',
 			'foreignKey' => 'user_id',
 			'dependent' => false,
@@ -134,6 +147,19 @@ class User extends AppModel {
 			'finderQuery' => '',
 			'counterQuery' => ''
 		),
+		'ReceivedTransactionRequest' => array(
+			'className' => 'TransactionRequest',
+			'foreignKey' => 'friend_user_id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+		),		
 		'Notification' => array(
 			'className' => 'Notification',
 			'foreignKey' => 'user_id',
@@ -148,6 +174,8 @@ class User extends AppModel {
 			'counterQuery' => ''
 		)
 	);
+
+
 
 }
 ?>

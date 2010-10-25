@@ -2,7 +2,7 @@
 class NotificationsController extends AppController {
 
 	var $name = 'Notifications';
-    var $scaffold;
+	var $scaffold = 'admin';
 
 }
 ?>

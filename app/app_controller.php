@@ -11,12 +11,20 @@ class AppController extends Controller {
         $this->Auth->loginRedirect = array('controller' => 'dashboard', 'action' => 'index');
         
         // Set current user array that can be accessed in any views
-   		$this->set('me', $this->Auth->user());       
+        $me = $this->Auth->user();
+   		$this->set('me', $me['User']);       
         
     }
     
 	function isAuthorized() {
 		return true;
 	}    
+
+    // Set current user function that can be accessed in any controller
+	function me($value = 'id') {
+		$me = $this->Auth->user();
+		return $me['User'][$value];
+	}    
+
 }
 ?>

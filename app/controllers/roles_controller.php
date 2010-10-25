@@ -2,7 +2,7 @@
 class RolesController extends AppController {
 
 	var $name = 'Roles';
-	var $scaffold;
+	var $scaffold = 'admin';
 
 }
 ?>

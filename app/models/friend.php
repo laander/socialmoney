@@ -1,7 +1,7 @@
 <?php
 class Friend extends AppModel {
 	var $name = 'Friend';
-	var $displayField = 'friend_id';	
+	var $displayField = 'friend_user_id';	
 	var $validate = array(
 		'user_id' => array(
 			'numeric' => array(
@@ -98,15 +98,33 @@ class Friend extends AppModel {
 			'fields' => '',
 			'order' => ''
 		),
-	);
-	var $hasOne = array(
 		'FriendMirror' => array(
 			'className' => 'Friend',
 			'foreignKey' => 'mirror_id',
+			'dependent' => true,			
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
-		)
+		)		
 	);
+	
+	function findMine($findType = 'all', $userId) {
+		if ($findType = 'list') {
+	    	$result = $this->find('all', array(
+	    		'fields' => array('Friend.friend_user_id', 'FriendUser.alias'),
+	    		'conditions' => array('Friend.user_id' => $userId)
+	    	));
+	    	foreach ($result as $item) {
+	    		$resultFiltered[$item['Friend']['friend_user_id']] = $item['FriendUser']['alias'];
+	    	}
+	    	return $resultFiltered;
+    	} else if ($findType = 'all') {
+			return $this->find('all', array('conditions' => array('Friend.user_id' => $userId)));
+    	} else {
+    		return false;
+    	}
+    	
+	}	
+	
 }
 ?>
