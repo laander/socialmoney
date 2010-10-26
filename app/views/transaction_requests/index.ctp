@@ -7,9 +7,10 @@
 			echo "The transaction was mutually accepted <br />";
 		} elseif ($item['TransactionRequest']['status_id'] == 1) {
 			echo "You must respond: ";
-			echo $html->link('Accept', array('controller' => 'transaction_requests', 'action' => 'respond', $item['TransactionRequest']['id'], 'true'));
+			echo $html->link('Accept', array('controller' => 'transaction_requests', 'action' => 'respond', $item['TransactionRequest']['id'], '2'));
 			echo " or ";
-			echo $html->link('Reject', array('controller' => 'transaction_requests', 'action' => 'respond', $item['TransactionRequest']['id'], 'false'));			
+			echo $html->link('Reject', array('controller' => 'transaction_requests', 'action' => 'respond', $item['TransactionRequest']['id'], '3'));			
+			echo "<br />";			
 		} else {
 			echo "The transaction was rejected by you <br />";
 		}

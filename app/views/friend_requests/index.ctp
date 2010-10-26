@@ -22,6 +22,7 @@
 <h3>Send friend request requests</h3>
 
 Send a new friend request request to a friend:
+<em>BUG: Shouldn't be able to pick existing friends and oneself</em>
 
 <?php echo $this->Form->create('FriendRequest');
 	// echo $this->Form->input('user_id');

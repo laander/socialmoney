@@ -28,16 +28,12 @@ class TransactionRequestsController extends AppController {
     
     }
     
-    function respond($id = null, $accept = false) {
+    function respond($id = null, $status = 3) {
     
     	if ($id != null) {
     		$this->TransactionRequest->id = $id;
     		$this->data = $this->TransactionRequest->findById($id);
-    		if ($accept) {
-    			$this->data['TransactionRequest']['status_id'] = 2;
-    		} else {
-	    		$this->data['TransactionRequest']['status_id'] = 3;
-    		}
+    		$this->data['TransactionRequest']['status_id'] = $status;
     		if ($this->TransactionRequest->save($this->data)) {
 	        	$this->Session->setFlash("Transaction request was updated!");    		
     			$this->redirect(array('controller' => 'transaction_requests', 'action' => 'index'));

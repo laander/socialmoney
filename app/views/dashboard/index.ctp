@@ -1,50 +1,98 @@
-<h2>Social Money!</h2><br />
+<h2>Dashboard!</h2>
 
-You are currently logged in as: <strong><?php echo $me['username']; ?></strong>, 
-privileged with role: <strong><?php echo $me['role_id']; ?></strong><br />
+My total balance: <?php echo $myUser['User']['total_balance']; ?><br />
+My total transactions: <?php echo $myUser['User']['total_transactions']; ?><br /><br />
 
-<?php echo $html->link('Logout', array('controller' => 'users', 'action' => 'logout')); ?><br /><br />
+<h3>New Transaction</h3>
 
-My total balance: <?php echo $me['total_balance']; ?><br />
-My total transactions: <?php echo $me['total_transactions']; ?><br /><br />
+<?php echo $this->Form->create('TransactionRequest');
+	// echo $this->Form->input('user_id');
+	echo $this->Form->input('friend_user_id', array('label' => 'Who?'));
+	echo $this->Form->input('amount', array('label' => 'How much?'));
+	echo $this->Form->submit('Go');	
+	// echo $this->Form->input('status_id');
+	echo $this->Form->end();
+?>
+
+<h3>Pending transactions</h3>
+<table style="width: 600px">
+
+<?php // Output received transaction requests thats pending (needs action)
+if(isset($myReceivedTransactionRequestsPending) && !empty($myReceivedTransactionRequestsPending)) {
+	foreach($myReceivedTransactionRequestsPending as $item) {
+		echo "<tr><td>";
+			if ($item['TransactionRequest']['amount'] > 0) {
+				echo "I owe " . $item['User']['alias'] . " <span style='color: red'>" . $item['TransactionRequest']['amount'] * 1 . "</span>";
+			} else {
+				echo $item['User']['alias'] . " owes me " . "<span style='color: green'>" . $item['TransactionRequest']['amount'] * -1 . "</span>";
+			}
+			echo "</td><td>" . $time->timeAgoInWords($item['TransactionRequest']['created']) . "</td><td>";
+			echo $html->link('Accept', array('controller' => 'transaction_requests', 'action' => 'respond', $item['TransactionRequest']['id'], '2'));
+			echo " or ";
+			echo $html->link('Reject', array('controller' => 'transaction_requests', 'action' => 'respond', $item['TransactionRequest']['id'], '3'));
+		echo "</td></tr>";
+	}
+} else {
+	echo "";
+} ?>
+
+<?php // Output sent transaction requests thats pending (awaiting reply)
+foreach($mySentTransactionRequestsPending as $item) {
+	echo "<tr><td>";
+		if ($item['TransactionRequest']['amount'] > 0) {
+			echo "I owe " . $item['User']['alias'] . " <span style='color: red'>" . $item['TransactionRequest']['amount'] * 1 . "</span>";
+		} else {
+			echo $item['User']['alias'] . " owes me " . "<span style='color: green'>" . $item['TransactionRequest']['amount'] * -1 . "</span>";
+		}
+		echo "</td><td>" . $time->timeAgoInWords($item['TransactionRequest']['created']) . "</td><td>";
+		echo "Awaiting a response";
+	echo "</td></tr>";
+} ?>
+
+</table>
+
+<?php echo $html->link('Perform new transactions or respond', array('controller' => 'transaction_requests', 'action' => 'index')); ?><br /><br />
 
 <h3>Friends</h3>
-
-<strong>My friends: </strong><br />
+<table style="width: 600px">
+	<tr>
+		<th>Friend</th>
+		<th>Balance</th>
+		<th>Transactions</th>
+		<th>Latest activity</th>
+	</tr>
 <?php foreach($myFriends as $item) {
-	echo $html->link($item['FriendUser']['alias'], array('controller' => 'friends', 'action' => 'view', $item['Friend']['id']));
-
-	echo " (balance: " . $item['Friend']['balance'] . ", transactions: " . $item['Friend']['transactions'] . ") " . "<br />";
-} ?><br />
-
-<strong>My sent friend requests (to): </strong><br />
-<?php foreach($mySentFriendRequests as $item) {
-	echo $item['FriendUser']['alias'] . " [" . $item['FriendRequest']['status_id'] . "] " . "<br />";
-} ?><br /> 
-
-<strong>My received friend requests (from): </strong><br />
-<?php foreach($myReceivedFriendRequests as $item) {
-	echo $item['User']['alias'] . " [" . $item['FriendRequest']['status_id'] . "] " . "<br />";
-} ?><br /> 
+	echo "<tr>";
+		echo "<td>" . $html->link($item['FriendUser']['alias'], array('controller' => 'friends', 'action' => 'view', $item['Friend']['id'])) . "</td>";
+		echo "<td>";		
+		if ($item['Friend']['balance'] < 0) {
+			echo "<span style='color: red'>" . $item['Friend']['balance'] * -1 . "</span>";
+		} else {
+			echo "<span style='color: green'>" . $item['Friend']['balance'] * 1 . "</span>";
+		}
+		echo "</td>";
+		echo "<td>" . $item['Friend']['transactions'] . "</td>";
+		echo "<td>" . $item['Friend']['modified'] . "</td>";		
+	echo "</tr>";
+} ?>
+</table>
 
 <?php echo $html->link('Establish your friendships', array('controller' => 'friend_requests', 'action' => 'index')); ?><br /><br />
 
-<h3>Transactions</h3>
+<h3>Transaction log</h3>
+<table style="width: 600px">
 
-<strong>My transactions (with): </strong><br />
 <?php foreach($myTransactions as $item) {
-	echo $item['FriendUser']['alias'] . " (" . $item['Transaction']['amount'] . ") " . "<br />";
-} ?><br />
+	echo "<tr><td>";
+		if ($item['Transaction']['amount'] > 0) {
+			echo "I owe " . $item['FriendUser']['alias'] . " <span style='color: red'>" . $item['Transaction']['amount'] * 1 . "</span>";
+		} else {
+			echo $item['FriendUser']['alias'] . " owes me " . "<span style='color: green'>" . $item['Transaction']['amount'] * -1 . "</span>";
+		}
+		echo "</td><td>" . $time->timeAgoInWords($item['Transaction']['created']) . "</td><td>";
+	echo "</td></tr>";
+} ?>
 
-<strong>My sent transaction requests (to): </strong><br />
-<?php foreach($mySentTransactionRequests as $item) {
-	echo $item['FriendUser']['alias'] . " (" . $item['TransactionRequest']['amount'] . ") " . " [" . $item['TransactionRequest']['status_id'] . "] " . "<br />";
-} ?><br /> 
+</table>
 
-<strong>My received transaction requests (from): </strong><br />
-<?php foreach($myReceivedTransactionRequests as $item) {
-	echo $item['User']['alias'] . " (" . $item['TransactionRequest']['amount'] * -1 . ") " . " [" . $item['TransactionRequest']['status_id'] . "] " . "<br />";
-} ?><br /> 
-
-<?php echo $html->link('Perform new transactions or respond', array('controller' => 'transaction_requests', 'action' => 'index')); ?><br /><br />
 

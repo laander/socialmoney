@@ -124,5 +124,14 @@ class TransactionRequest extends AppModel {
 	function findMineReceived($findType = 'all', $userId) {
 		return $this->find($findType, array('conditions' => array('TransactionRequest.friend_user_id' => $userId)));
 	}
+	function findMine($findType = 'all', $userId) {
+		return $this->find($findType, array('conditions' => array(
+			array('OR' => array(
+				'TransactionRequest.user_id' => $userId,
+				'TransactionRequest.friend_user_id' => $userId
+				)
+			)
+		)));
+	}
 }
 ?>

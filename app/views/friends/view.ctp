@@ -1,6 +1,6 @@
 <h3>Transactions with your friend</h3>
 
-<p><?php echo $friend['FriendUser']['alias']; ?></p>
+<p><strong><?php echo $friend['FriendUser']['alias']; ?></strong></p>
 <p>Current balance: <?php echo $friend['Friend']['balance']; ?></p>
 <p>Number of transactions: <?php echo $friend['Friend']['transactions']; ?></p>
 <br />

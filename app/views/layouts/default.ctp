@@ -10,13 +10,16 @@
 		?>
 		<style type="text/css">
 			#header a { color: #fff }
+			#header { color: gray; }
 		</style>
 	</head>
 	<body>
 		<div id="container">
 		
 			<div id="header">
-				<?php echo $this->Html->link('Home', array('controller' => 'dashboard', 'action' => 'index')); ?>
+				<?php echo $this->Html->link('Social Money ALPHA v0.1', array('controller' => 'dashboard', 'action' => 'index')); ?>
+				... logged in as: <strong><?php echo $me['username']; ?></strong>
+				(<?php echo $html->link('logout', array('controller' => 'users', 'action' => 'logout')); ?>, <?php echo $html->link('profile', array('controller' => 'users', 'action' => 'profile')); ?>)
 			</div>
 		
 			<div id="content">	
