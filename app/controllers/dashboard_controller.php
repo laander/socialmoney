@@ -7,7 +7,7 @@ class DashboardController extends AppController {
     var $persistModel = true;
 
     function index() {
-    
+        	
     	// Create new Transaction Request form
 	    if(!empty($this->data['TransactionRequest'])) {
 	    

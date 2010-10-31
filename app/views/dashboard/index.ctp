@@ -66,7 +66,7 @@ foreach($mySentTransactionRequestsPending as $item) {
 		echo "<td>" . $html->link($item['FriendUser']['alias'], array('controller' => 'friends', 'action' => 'view', $item['Friend']['id'])) . "</td>";
 		echo "<td>";		
 		if ($item['Friend']['balance'] < 0) {
-			echo "<span style='color: red'>" . $item['Friend']['balance'] * -1 . "</span>";
+			echo "<span style='color: red'>" . $item['Friend']['balance'] * 1 . "</span>";
 		} else {
 			echo "<span style='color: green'>" . $item['Friend']['balance'] * 1 . "</span>";
 		}
